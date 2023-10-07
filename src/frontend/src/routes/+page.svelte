@@ -19,7 +19,7 @@
 			const actor = createActor(canisterId, { agentOptions: { host } });
 
 			// Call the IC
-			greeting = await actor.greet(input);
+			greeting = await actor.hello(input);
 		} catch (err: unknown) {
 			console.error(err);
 		}
