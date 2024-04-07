@@ -1,0 +1,8 @@
+{
+    "core": {
+      "yes": "Yes",
+      "no": "No",
+      "login": "Login",
+      "logout": "Logout"
+    }
+}

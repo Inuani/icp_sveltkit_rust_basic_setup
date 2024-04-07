@@ -1,0 +1,8 @@
+{
+    "core": {
+      "yes": "Oui",
+      "no": "Non",
+      "login": "connexion",
+      "logout": "déconnexion"
+    }
+}

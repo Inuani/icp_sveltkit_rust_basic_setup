@@ -1,13 +1,16 @@
 import { writable, derived, type Readable } from 'svelte/store';
 import { AuthClient } from '@dfinity/auth-client';
 import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
+import { isNullish } from '@dfinity/utils';
+import type { Identity } from '@dfinity/agent';
 import {
   AUTH_POPUP_WIDTH,
   AUTH_POPUP_HEIGHT,
   AUTH_MAX_TIME_TO_LIVE,
-  localIdentityCanisterId,
-} from '$lib/constants';
-import type { Identity } from '@dfinity/agent';
+  localIdentityCanisterId 
+        } from '$lib/constants';
+
 
 type OptionIdentity = Identity | undefined | null;
 
@@ -23,41 +26,27 @@ export interface AuthStore extends Readable<AuthStoreData> {
   signOut: () => Promise<void>;
 }
 
-// function popupCenter({ width, height }: { width: number; height: number }) {
-//                 const top = window.innerHeight / 2 - height / 2 + window.screenY;
-//                 const left = window.innerWidth / 2 - width / 2 + window.screenX;
-//                 return `top=${top},left=${left},width=${width},height=${height}`;
-//               }
+export const popupCenter = ({ width, height}: {width: number; height: number;}): string | undefined => {
+  if (!browser) {
+    return undefined;
+  }
 
-import { browser } from '$app/environment';
-import { isNullish } from '@dfinity/utils';
+  if (isNullish(window) || isNullish(window.top)) {
+    return undefined;
+  }
 
-              export const popupCenter = ({
-                width,
-                height
-              }: {
-                width: number;
-                height: number;
-              }): string | undefined => {
-                if (!browser) {
-                  return undefined;
-                }
-              
-                if (isNullish(window) || isNullish(window.top)) {
-                  return undefined;
-                }
-              
-                const {
-                  top: { innerWidth, innerHeight }
-                } = window;
-              
-                const y = innerHeight / 2 + screenY - height / 2;
-                const x = innerWidth / 2 + screenX - width / 2;
-              
-                return `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${y}, left=${x}`;
-              };
+  const {
+    top: { innerWidth, innerHeight }
+  } = window;
+
+  const y = innerHeight / 2 + screenY - height / 2;
+  const x = innerWidth / 2 + screenX - width / 2;
+
+  return `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${y}, left=${x}`;
+};
 
 const initAuthStore = (): AuthStore => {
+  
   const { subscribe, set, update } = writable<AuthStoreData>({ identity: undefined });
 
   return {
@@ -102,7 +91,7 @@ const initAuthStore = (): AuthStore => {
 
 export const authStore = initAuthStore();
 
-export const authSignedInStore: Readable<boolean> = derived(
+export const isUserAuthStore: Readable<boolean> = derived(
   authStore,
   ($authStore) => $authStore.identity !== null && $authStore.identity !== undefined,
 );

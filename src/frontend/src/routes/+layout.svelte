@@ -1,11 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   // Assuming authStore exports the functions as methods of an object
-  import { authStore, authSignedInStore } from '$lib/auth'; 
+  import { authStore, isUserAuthStore } from '$lib/auth'; 
+  import { i18n } from '$lib/stores/i18n.store';
+  import type { Languages } from '$lib/types/languages';
 
-  onMount(() => {
-    // Use the sync method from authStore
-    authStore.sync();
+  onMount(async () => {
+    await Promise.all([
+      authStore.sync(), // Sync auth state
+      i18n.init() // Initialize i18n
+    ]);
+
   });
 
   // Use the signIn and signOut methods from authStore for event handlers
@@ -16,12 +21,22 @@
   const handleLogout = () => {
     authStore.signOut();
   };
+
+  const switchLang = (lang: Languages) => {
+    i18n.switchLang(lang);
+  };
 </script>
 
-{#if $authSignedInStore}
-  <button on:click={handleLogout}>Logout</button> 
+<div>
+  <!-- Language Switcher -->
+  <button on:click={() => switchLang('en')}>English</button>
+  <button on:click={() => switchLang('fr')}>Français</button>
+</div>
+
+{#if $isUserAuthStore}
+  <button on:click={handleLogout}>{$i18n.core.logout}</button> 
 {:else}
-  <button on:click={handleLogin}>Login with Internet Identity</button>
+  <button on:click={handleLogin}>{$i18n.core.login}</button>
 {/if}
 <slot />
 
