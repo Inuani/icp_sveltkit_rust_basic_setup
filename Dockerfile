@@ -30,7 +30,8 @@ RUN sed -i "s|@\\\h||g" ~/.bashrc
 RUN DFXVM_INIT_YES=true sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)" && \
 echo 'export PATH="$HOME/.dfx/bin:$PATH"' >> ~/.bashrc
 
-ENV PATH="$DFX_PATH:$PATH"
+ENV PATH="/root/.dfx/bin:$PATH"
+
 
 COPY start.sh /start.sh
 

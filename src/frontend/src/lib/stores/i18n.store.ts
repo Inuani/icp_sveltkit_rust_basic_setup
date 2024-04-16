@@ -1,6 +1,4 @@
-
 import en from '$lib/i18n/en.json';
-
 import type { Languages } from '$lib/types/languages';
 import { getLocalStorageLang, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { writable, type Readable } from 'svelte/store';
