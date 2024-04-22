@@ -97,3 +97,4 @@ export const isUserAuthStore: Readable<boolean> = derived(
   authStore,
   ($authStore) => $authStore.identity !== null && $authStore.identity !== undefined,
 );
+
